@@ -1,0 +1,9 @@
+.git/
+.idea/
+.svn/
+node_modules/
+uploads/
+backups/
+upgrade/
+custom-styles.css
+/sitemap.xml
