@@ -1,4 +1,6 @@
 <?php
+define('inc_access', TRUE);
+
 include_once('includes/header.inc.php');
 ?>
 <div class="row">
