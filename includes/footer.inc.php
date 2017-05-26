@@ -11,18 +11,10 @@ if (!defined('inc_access')) {
 <!-- /#page-wrapper -->
 
 <footer>
-    <span class="product-name">YouSeeMore</span> <span class="product-version">v7.0.0</span>
+    <span class="product-name">YouSeeMore</span> <span class="product-version"></span>
     <div class="pull-right">
         <ul class="nav-footer">
-            <li>
-                <a href="#" target="_blank">Privacy</a>
-            </li>
-            <li>
-                <a href="#" target="_blank">Feedback</a>
-            </li>
-            <li>
-                <a href="#" target="_blank">Help</a>
-            </li>
+
         </ul>
         <span class="copyright">&copy; 2017&nbsp;<a href="https://www.tlcdelivers.com" target="_blank">The Library Corporation</a></span>
     </div>
@@ -33,3 +25,8 @@ if (!defined('inc_access')) {
 
 </body>
 </html>
+<?php
+//close all database connections
+mysqli_close($db_conn);
+die();
+?>
