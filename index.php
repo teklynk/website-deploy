@@ -1,5 +1,8 @@
 <?php
+define('inc_access', TRUE);
+
 include_once('includes/header.inc.php');
+
 ?>
 <div class="row">
     <div class="col-lg-12">
@@ -15,6 +18,7 @@ include_once('includes/header.inc.php');
         <div class="card-body">
             <?php
             if ($_GET['form'] == 'add' || $_GET['form'] == 'edit') {
+
                 if ($_GET['form'] == 'edit'){
                     //Get values from database
                 } else {

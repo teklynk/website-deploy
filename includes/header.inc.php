@@ -1,36 +1,46 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <?php
+    if (!defined('inc_access')) {
+        die('Direct access not permitted');
+    }
+
     //DB connection string and Global variables
-    include_once('../config/config.php');
+    require_once('config/config.php');
 
     //Admin panel functions
-    include_once('../core/functions.php');
+    require_once('core/functions.php');
     ?>
+
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
 
     <title>YouSeeMore - Utilities</title>
 
     <!-- Core CSS Libraries -->
-    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST']; ?>/css/admin.min.css">
+    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST'].$subDirectory; ?>/css/admin.min.css">
 
     <!-- Admin Panel Fonts -->
-    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST'] ?>/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST'].$subDirectory; ?>/css/font-awesome.min.css">
 
     <!-- Admin Panel CSS -->
-    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST']; ?>/css/sb-admin.min.css">
+    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST'].$subDirectory; ?>/css/sb-admin.min.css">
 
     <!-- Custom Fonts from: localfont.com -->
-    <link href='//<?php echo $_SERVER['HTTP_HOST'] ?>/css/fonts.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="//<?php echo $_SERVER['HTTP_HOST'].$subDirectory; ?>/css/fonts.min.css">
 
     <!-- Core JS Libraries -->
-    <script type="text/javascript" language="javascript" src="//<?php echo $_SERVER['HTTP_HOST']; ?>/js/admin.min.js"></script>
+    <script type="text/javascript" language="javascript" src="//<?php echo $_SERVER['HTTP_HOST'].$subDirectory; ?>/js/admin.min.js"></script>
 
     <!-- Custom Functions -->
-    <script type="text/javascript" language="javascript" src="//<?php echo $_SERVER['HTTP_HOST']; ?>/js/functions.min.js"></script>
+    <script type="text/javascript" language="javascript" src="//<?php echo $_SERVER['HTTP_HOST'].$subDirectory; ?>/js/functions.min.js"></script>
     <style>
         body {
             background-color: #fcfcfc;

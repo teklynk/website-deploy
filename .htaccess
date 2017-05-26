@@ -31,7 +31,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 
 #Deny access to these folders - forbidden 403
+RedirectMatch 403 ^/core/$
 RedirectMatch 403 ^/config/$
+RedirectMatch 403 ^/includes/$
 
 #Deny access to these files - forbidden 403
 <FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
