@@ -7,3 +7,4 @@ backups/
 upgrade/
 custom-styles.css
 /sitemap.xml
+!/index.php
