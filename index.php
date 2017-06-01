@@ -12,7 +12,114 @@ include_once('includes/header.inc.php');
         </ol>
     </div>
 </div>
+<!--modal window-->
+<div id="myModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a type="button" class="close" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                </a>
+                <h4 class="modal-title">&nbsp;</h4>
+            </div>
+            <?php
+            $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
+            $rowSite = mysqli_fetch_array($sqlSite);
+            echo $ysmSitesDir . '/' . $rowSite['name'];
 
+            if (!empty($_POST)) {
+
+                $searchArr = array(" ", "-", "'");
+                $replaceArr = array("_", "_", "");
+
+                $siteName = str_replace($searchArr, $replaceArr, safeCleanStr(strtolower($_POST['site_name'])));
+                $custNumber = safeCleanStr(urlencode($_POST['cust_number']));
+                $custSid = safeCleanStr(urlencode($_POST['cust_sid']));
+                $formAction = strtolower(urlencode($_POST['form_action']));
+
+                if (!empty($_POST['loc_id'])) {
+
+                    //Edit
+                    if ($rowSite['name'] != $siteName){
+                        //update data on submit
+                        $siteUpdate = "UPDATE sites SET customerid='" . $custNumber . "', name='" . $siteName . "', sid='" . $custSid . "', version='', date='" . date("Y-m-d H:i:s") . "' WHERE id=" . $_POST['loc_id'] . " ";
+                        mysqli_query($db_conn, $siteUpdate);
+
+                        if (!file_exists(dirname($ysmSitesDir . '/' . $siteName))) {
+                            mkdir(dirname($ysmSitesDir . '/' . $siteName), 0777, true);
+                        }
+
+                        rename(dirname($ysmSitesDir . '/' . $rowSite['name']), dirname($ysmSitesDir . '/' . $siteName));
+                    }
+
+                } elseif (!empty($_POST['delete_id'])) {
+
+                    //Delete
+                    //delete site
+                    $siteDelete = "DELETE FROM sites WHERE id=" . $_POST['delete_id'] . " ";
+                    mysqli_query($db_conn, $siteDelete);
+
+                    //Archive/Move site
+
+                } else {
+
+                    //Add
+                    //insert data on submit
+                    $siteInsert = "INSERT INTO sites (customerid, name, sid, version, date) VALUES ('" . $custNumber . "', '" . $siteName . "', '" . $custSid . "', '', '" . date("Y-m-d H:i:s") . "')";
+                    mysqli_query($db_conn, $siteInsert);
+
+                    //Run Jenkins Build from URL
+                    $jenkinsUrl = $buildServer."&form=".$formAction."&site_name=".$siteName."&cust_number=".$custNumber."&cust_sid=".$custSid;
+
+                    $ch = curl_init($jenkinsUrl);
+                    curl_setopt($ch, CURLOPT_HEADER, true);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    //$data = curl_exec($ch);
+                    curl_close($ch);
+                }
+
+            }
+
+            if ($_GET['form'] == 'delete'){
+                $disableInputs = 'disabled';
+            } else {
+                $disableInputs = '';
+            }
+            ?>
+            <div class="modal-body">
+                <form name="addeditform" id="addeditform" method="post" action="index.php?">
+                    <h1 class="page-header"><?php echo ucwords($_GET['form']); ?> Site</h1>
+                    <div class="form-group">
+                        <label>Customer Number</label>
+                        <input class="form-control" <?php echo $disableInputs; ?> value="<?php echo $rowSite['customerid']; ?>" maxlength="100" placeholder="8675309" id="cust_number" name="cust_number" type="text" autocomplete="off" autofocus required>
+                    </div>
+                    <div class="form-group">
+                        <label>Customer SID</label>
+                        <input class="form-control" <?php echo $disableInputs; ?> value="<?php echo $rowSite['sid']; ?>" maxlength="12" placeholder="L1D1" id="cust_sid" name="cust_sid" type="text" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Site Name</label>
+                        <input class="form-control" <?php echo $disableInputs; ?> value="<?php echo $rowSite['name']; ?>" maxlength="100" placeholder="handleypl" id="site_name" name="site_name" type="text" autocomplete="off" required>
+                    </div>
+                    <?php
+
+                    echo "<input type='hidden' id='form_action' name='form_action' value='".$_GET['form']."'/>";
+
+                    if ($_GET['form'] == 'delete'){
+                        echo "<input type='hidden' id='delete_id' name='delete_id' value='".$_GET['id']."'/>";
+                        echo "<button class='btn btn-danger' type='submit' id='deletesubmit' name='deletesubmit'><i class='fa fa-trash'></i> Delete</button>";
+                    } else {
+                        echo  "<input type='hidden' id='loc_id' name='loc_id' value='".$_GET['id']."'/>";
+                        echo "<button class='btn btn-primary' type='submit' id='addeditsubmit' name='addeditsubmit'><i class='fa fa-save'></i> Save</button>";
+                    }
+                    ?>
+                    <button class="btn btn-default" id="cancel" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+            <div class="modal-footer">&nbsp;</div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="container">
     <div class="card">
         <div class="card-body">
@@ -62,111 +169,6 @@ include_once('includes/header.inc.php');
         </div>
     </div>
 </div>
-
-<!--modal window-->
-<div id="myModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <a type="button" class="close" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                </a>
-                <h4 class="modal-title">&nbsp;</h4>
-            </div>
-            <?php
-            $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
-            $rowSite = mysqli_fetch_array($sqlSite);
-            echo $ysmSitesDir . '/' . $rowSite['name'];
-
-            if (!empty($_POST)) {
-
-                $searchArr = array(" ", "-", "'");
-                $replaceArr = array("_", "_", "");
-
-                $siteName = str_replace($searchArr, $replaceArr, safeCleanStr(strtolower($_POST['site_name'])));
-                $custNumber = safeCleanStr(urlencode($_POST['cust_number']));
-                $custSid = safeCleanStr(urlencode($_POST['cust_sid']));
-                $formAction = strtolower(urlencode($_POST['form_action']));
-
-                if (!empty($_POST['loc_id'])) {
-                    //Edit
-                    //update data on submit
-                    $siteUpdate = "UPDATE sites SET customerid='" . $custNumber . "', name='" . $siteName . "', sid='" . $custSid . "', version='', date='" . date("Y-m-d H:i:s") . "' WHERE id=" . $_POST['loc_id'] . " ";
-                    mysqli_query($db_conn, $siteUpdate);
-
-                    //Rename site directory/folder
-                    if ($rowSite['name'] != $siteName){
-                        echo "got this far";
-                        die();
-                        rename($ysmSitesDir . '/' . $rowSite['name'], $ysmSitesDir . '/' . $siteName);
-                    }
-
-                } elseif (!empty($_POST['delete_id'])) {
-                    //Delete
-                    //delete site
-                    $siteDelete = "DELETE FROM sites WHERE id=" . $_POST['delete_id'] . " ";
-                    mysqli_query($db_conn, $siteDelete);
-
-                    //Archive/Move site
-
-                } else {
-                    //Add
-                    //insert data on submit
-                    $siteInsert = "INSERT INTO sites (customerid, name, sid, version, date) VALUES ('" . $custNumber . "', '" . $siteName . "', '" . $custSid . "', '', '" . date("Y-m-d H:i:s") . "')";
-                    mysqli_query($db_conn, $siteInsert);
-
-                    //Run Jenkins Build from URL
-                    $jenkinsUrl = $buildServer."&form=".$formAction."&site_name=".$siteName."&cust_number=".$custNumber."&cust_sid=".$custSid;
-
-                    $ch = curl_init($jenkinsUrl);
-                    curl_setopt($ch, CURLOPT_HEADER, true);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $data = curl_exec($ch);
-                    curl_close($ch);
-                }
-
-            }
-
-            if ($_GET['form'] == 'delete'){
-                $disableInputs = 'disabled';
-            } else {
-                $disableInputs = '';
-            }
-            ?>
-            <div class="modal-body">
-                <form name="addeditform" id="addeditform" method="post" action="index.php?">
-                    <h1 class="page-header"><?php echo ucwords($_GET['form']); ?> Site</h1>
-                    <div class="form-group">
-                        <label>Customer Number</label>
-                        <input class="form-control" <?php echo $disableInputs; ?> value="<?php echo $rowSite['customerid']; ?>" maxlength="100" placeholder="8675309" id="cust_number" name="cust_number" type="text" autocomplete="off" autofocus required>
-                    </div>
-                    <div class="form-group">
-                        <label>Customer SID</label>
-                        <input class="form-control" <?php echo $disableInputs; ?> value="<?php echo $rowSite['sid']; ?>" maxlength="12" placeholder="L1D1" id="cust_sid" name="cust_sid" type="text" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Site Name</label>
-                        <input class="form-control" <?php echo $disableInputs; ?> value="<?php echo $rowSite['name']; ?>" maxlength="100" placeholder="handleypl" id="site_name" name="site_name" type="text" autocomplete="off" required>
-                    </div>
-                    <?php
-
-                    echo "<input type='hidden' id='form_action' name='form_action' value='".$_GET['form']."'/>";
-
-                    if ($_GET['form'] == 'delete'){
-                        echo "<input type='hidden' id='delete_id' name='delete_id' value='".$_GET['id']."'/>";
-                        echo "<button class='btn btn-danger' type='submit' id='deletesubmit' name='deletesubmit'><i class='fa fa-trash'></i> Delete</button>";
-                    } else {
-                        echo  "<input type='hidden' id='loc_id' name='loc_id' value='".$_GET['id']."'/>";
-                        echo "<button class='btn btn-primary' type='submit' id='addeditsubmit' name='addeditsubmit'><i class='fa fa-save'></i> Save</button>";
-                    }
-                    ?>
-                    <button class="btn btn-default" id="cancel" data-dismiss="modal">Cancel</button>
-                </form>
-            </div>
-        <div class="modal-footer">&nbsp;</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <style>
     .modal-sm {
