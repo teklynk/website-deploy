@@ -25,7 +25,6 @@ include_once('includes/header.inc.php');
             <?php
             $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
             $rowSite = mysqli_fetch_array($sqlSite);
-            $rowSiteName = $rowSite['name'];
 
             echo $ysmSitesDir . "/" . $rowSiteName;
 
@@ -38,6 +37,7 @@ include_once('includes/header.inc.php');
                 $custNumber = safeCleanStr(urlencode($_POST['cust_number']));
                 $custSid = safeCleanStr(urlencode($_POST['cust_sid']));
                 $formAction = strtolower(urlencode($_POST['form_action']));
+                $rowSiteName = strtolower(urlencode($_POST['row_site_name']));
 
                 if (!empty($_POST['loc_id'])) {
 
@@ -101,6 +101,7 @@ include_once('includes/header.inc.php');
                     </div>
                     <?php
 
+                    echo "<input type='hidden' id='row_site_name' name='row_site_name' value='".$rowSite['name']."'/>";
                     echo "<input type='hidden' id='form_action' name='form_action' value='".$_GET['form']."'/>";
 
                     if ($_GET['form'] == 'delete'){
