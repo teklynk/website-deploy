@@ -432,6 +432,18 @@ function extractZip($filename, $dest){
         echo 'The output directory does not exist!';
     }
 }
+
+function renameWithNestedMkdir($oldname, $newname){
+    $targetDir = dirname($newname); // Returns a parent directory's path (operates naively on the input string, and is not aware of the actual filesystem)
+
+    // here $targetDir is "/some/long/nested/path/test2/xxx1"
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0777, true); // third parameter "true" allows the creation of nested directories
+    }
+
+    return rename($oldname, $newname);
+}
+
 //Variable to hide elements from non-admin users
 if ($_SESSION['user_level'] == 1 && $multiBranch == 'true' && $_GET['loc_id'] == 1 ){
     $adminOnlyShow = "";
