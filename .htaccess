@@ -1,0 +1,60 @@
+# PHP overrides
+php_flag display_startup_errors off
+php_flag display_errors off
+php_flag html_errors off
+php_flag log_errors on
+php_flag ignore_repeated_errors on
+php_flag ignore_repeated_source on
+php_flag report_memleaks on
+php_flag track_errors on
+php_flag file_uploads 1
+php_flag session.auto_start 0
+php_flag session.bug_compat_warn 0
+php_value max_execution_time 200
+php_value max_input_time 200
+php_value upload_max_filesize 4M
+php_value post_max_size 4M
+php_value docref_root 0
+php_value docref_ext 0
+php_value error_reporting -1
+php_value log_errors_max_len 0
+#php_value error_log /var/log/php_errors.log
+
+Options +FollowSymLinks
+
+RewriteEngine On
+
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+
+#Deny access to these folders - forbidden 403
+RedirectMatch 403 ^/core/$
+RedirectMatch 403 ^/config/$
+RedirectMatch 403 ^/uploads/$
+RedirectMatch 403 ^/themes/$
+RedirectMatch 403 ^/includes/$
+RedirectMatch 403 ^/images/$
+RedirectMatch 403 ^/fonts/$
+RedirectMatch 403 ^/css/$
+RedirectMatch 403 ^/js/$
+RedirectMatch 403 ^/mail/$
+RedirectMatch 403 ^/ajax/$
+RedirectMatch 403 ^/import/$
+RedirectMatch 403 ^/backups/$
+
+#Deny access to these files - forbidden 403
+<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+#Prevent html,php files from being loaded inside an iframe.
+<IfModule mod_headers.c>
+    Header always append X-FRAME-OPTIONS SAMEORIGIN
+    <FilesMatch "\.(appcache|atom|bbaw|bmp|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|htc|ico|jpe?g|js|json(ld)?|m4[av]|manifest|map|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
+         Header unset X-Frame-Options
+    </FilesMatch>
+</IfModule>

@@ -11,13 +11,18 @@ if (mysqli_connect_errno($db_conn)) {
 }
 
 //Get Sub-folder name
-if (basename(dirname($_SERVER['PHP_SELF']))) {
-    $subDirectory = "/".basename(dirname($_SERVER['PHP_SELF']));
+$subURL = $_SERVER['REQUEST_URI'];
+$subPath = parse_url($subURL, PHP_URL_PATH);
+$subDir = explode('/', $subPath)[1];
+$subDir = trim($subDir);
+
+if (strpos($subDir, 'admin') !== false || strpos($subDir, '.php') !== false ) {
+    $subDirectory = '';
 } else {
-    $subDirectory = "";
+    $subDirectory = '/'.$subDir;
 }
 
 
-$IPrange = "555.555.";
 $customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";
-$buildURLStr = "";
+$ysmServer = "http://ysmcustomerdemo1.tlcdelivers.com";
+$buildServer = "https://jenkins.tlcdelivers.com/buildByToken/buildWithParameters?job=YSM7_Demo_Parameterized_Add_Site&token=deployYSMCustomerWebApp";
