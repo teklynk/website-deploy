@@ -86,7 +86,7 @@ include_once('includes/header.inc.php');
                 $siteName = str_replace($searchArr, $replaceArr, safeCleanStr(strtolower($_POST['site_name'])));
                 $custNumber = safeCleanStr(urlencode($_POST['cust_number']));
                 $custSid = safeCleanStr(urlencode($_POST['cust_sid']));
-                $formAction = strtolower($_POST['form_action']);
+                $formAction = strtolower(urlencode($_POST['form_action']));
 
                 if (!empty($_POST['loc_id'])) {
                     //Edit
@@ -95,7 +95,7 @@ include_once('includes/header.inc.php');
                     mysqli_query($db_conn, $siteUpdate);
 
                     //Rename site directory/folder
-                    if ($siteName != $rowSite['name']){
+                    if ($rowSite['name'] != $siteName){
                         rename($ysmSitesDir . '/' . $rowSite['name'], $ysmSitesDir . '/' . $siteName);
                     }
 
