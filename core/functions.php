@@ -441,7 +441,7 @@ function renameWithNestedMkdir($oldname, $newname){
         mkdir($targetDir, 0777, true); // third parameter "true" allows the creation of nested directories
     }
 
-    return rename($oldname, $newname);
+    return rename(dirname($oldname), dirname($newname));
 }
 
 //Variable to hide elements from non-admin users

@@ -25,6 +25,7 @@ include_once('includes/header.inc.php');
             <?php
             $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
             $rowSite = mysqli_fetch_array($sqlSite);
+            $rowSiteName = $rowSite['name'];
 
             if (!empty($_POST)) {
 
@@ -39,12 +40,12 @@ include_once('includes/header.inc.php');
                 if (!empty($_POST['loc_id'])) {
 
                     //Edit
-                    if ($rowSite['name'] != $siteName){
+                    if ($rowSiteName != $siteName){
                         //update data on submit
                         $siteUpdate = "UPDATE sites SET customerid='" . $custNumber . "', name='" . $siteName . "', sid='" . $custSid . "', version='', date='" . date("Y-m-d H:i:s") . "' WHERE id=" . $_POST['loc_id'] . " ";
                         mysqli_query($db_conn, $siteUpdate);
 
-                        renameWithNestedMkdir($ysmSitesDir . '/' . $rowSite['name'], $ysmSitesDir . '/' . $siteName);
+                        renameWithNestedMkdir("$ysmSitesDir/$rowSiteName", "$ysmSitesDir/$siteName");
                     }
 
                 } elseif (!empty($_POST['delete_id'])) {
