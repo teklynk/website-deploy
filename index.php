@@ -96,6 +96,8 @@ include_once('includes/header.inc.php');
 
                     //Rename site directory/folder
                     if ($rowSite['name'] != $siteName){
+                        echo "got this far";
+                        die();
                         rename($ysmSitesDir . '/' . $rowSite['name'], $ysmSitesDir . '/' . $siteName);
                     }
 
