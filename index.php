@@ -76,6 +76,7 @@ include_once('includes/header.inc.php');
             <?php
             $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
             $rowSite = mysqli_fetch_array($sqlSite);
+            echo $ysmSitesDir . '/' . $rowSite['name'];
 
             if (!empty($_POST)) {
 
@@ -94,7 +95,7 @@ include_once('includes/header.inc.php');
                     mysqli_query($db_conn, $siteUpdate);
 
                     //Rename site directory/folder
-                    if ($siteName !== $rowSite['name']){
+                    if ($siteName != $rowSite['name']){
                         rename($ysmSitesDir . '/' . $rowSite['name'], $ysmSitesDir . '/' . $siteName);
                     }
 
