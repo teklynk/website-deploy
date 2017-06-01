@@ -10,6 +10,12 @@ if (mysqli_connect_errno($db_conn)) {
     die("Failed to connect to MySQL: " . mysqli_connect_error($db_conn));
 }
 
+//Global Variables
+$ysmSitesDir = "/var/www/html";
+$customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";
+$ysmServer = "http://ysmcustomerdemo1.tlcdelivers.com";
+$buildServer = "https://jenkins.tlcdelivers.com/buildByToken/buildWithParameters?job=YSM7_Demo_Parameterized_Add_Site&token=deployYSMCustomerWebApp";
+
 //Get Sub-folder name
 $subURL = $_SERVER['REQUEST_URI'];
 $subPath = parse_url($subURL, PHP_URL_PATH);
@@ -21,8 +27,3 @@ if (strpos($subDir, 'admin') !== false || strpos($subDir, '.php') !== false ) {
 } else {
     $subDirectory = '/'.$subDir;
 }
-
-
-$customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";
-$ysmServer = "http://ysmcustomerdemo1.tlcdelivers.com";
-$buildServer = "https://jenkins.tlcdelivers.com/buildByToken/buildWithParameters?job=YSM7_Demo_Parameterized_Add_Site&token=deployYSMCustomerWebApp";
