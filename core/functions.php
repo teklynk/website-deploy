@@ -368,6 +368,47 @@ function downloadFile($url, $path) {
     }
     curl_close($ch);
 }
+// compress all files in the source directory to destination directory
+function zipFile($source, $destination, $flag = ''){
+    if (!extension_loaded('zip') || !file_exists($source)) {
+        return false;
+    }
+
+    $zip = new ZipArchive();
+
+    if (!$zip->open($destination, ZIPARCHIVE::CREATE)) {
+        return false;
+    }
+
+    $source = str_replace('\\', '/', realpath($source));
+
+    if ($flag) {
+        $flag = basename($source) . '/';
+    }
+
+    if (is_dir($source) === true) {
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($files as $file) {
+
+            $file = str_replace('\\', '/', realpath($file));
+
+            if (strpos($flag.$file,$source) !== false) { // this will add only the folder we want to add in zip
+
+                if (is_dir($file) === true) {
+                    $zip->addEmptyDir(str_replace($source . '/', '', $flag.$file . '/'));
+                } elseif (is_file($file) === true) {
+                    $zip->addFromString(str_replace($source . '/', '', $flag.$file), file_get_contents($file));
+                }
+            }
+        }
+    } elseif (is_file($source) === true) {
+        $zip->addFromString($flag.basename($source), file_get_contents($source));
+    }
+
+    return $zip->close();
+}
+
 //Extract zip files/folder to specified destination
 function extractZip($filename, $dest){
     if (is_dir($dest)) {
@@ -433,15 +474,10 @@ function extractZip($filename, $dest){
     }
 }
 
-function renameWithNestedMkdir($oldname, $newname){
-    $targetDir = dirname($newname); // Returns a parent directory's path (operates naively on the input string, and is not aware of the actual filesystem)
-
-    // here $targetDir is "/some/long/nested/path/test2/xxx1"
-    if (!file_exists($targetDir)) {
-        mkdir($targetDir, 0777, true); // third parameter "true" allows the creation of nested directories
+function renameDir($oldname, $newname){
+    if (file_exists(dirname($oldname))) {
+        return rename($oldname, $newname);
     }
-
-    return rename($oldname, $newname);
 }
 
 //Variable to hide elements from non-admin users

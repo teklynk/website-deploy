@@ -15,6 +15,13 @@ session_start();
 
     //Admin panel functions
     require_once('core/functions.php');
+
+    //IP Range is set in config and contains numbers
+    if (!empty($IPrange)) {
+        if (!strstr(getRealIpAddr(), $IPrange)) {
+            die('Permission denied. Not inside network. Your IP is ' . getRealIpAddr()); //Do not execute any more code on the page
+        }
+    }
     ?>
 
     <meta charset="utf-8" />

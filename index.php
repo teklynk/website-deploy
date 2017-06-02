@@ -26,8 +26,6 @@ include_once('includes/header.inc.php');
             $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
             $rowSite = mysqli_fetch_array($sqlSite);
 
-            echo $ysmSitesDir . "/" . $rowSiteName;
-
             if (!empty($_POST)) {
 
                 $searchArr = array(" ", "-", "'");
@@ -40,27 +38,42 @@ include_once('includes/header.inc.php');
                 $rowSiteName = strtolower(urlencode($_POST['row_site_name']));
 
                 if (!empty($_POST['loc_id'])) {
-
                     //Edit
                     if ($rowSiteName != $siteName){
                         //update data on submit
                         $siteUpdate = "UPDATE sites SET customerid='" . $custNumber . "', name='" . $siteName . "', sid='" . $custSid . "', version='', date='" . date("Y-m-d H:i:s") . "' WHERE id=" . $_POST['loc_id'] . " ";
                         mysqli_query($db_conn, $siteUpdate);
 
-                        renameWithNestedMkdir($ysmSitesDir . "/" . $rowSiteName, $ysmSitesDir . "/" . $siteName) OR die('Could not create ' . $rowSiteName . ' or ' . $siteName);
+                        //Rename the site folder
+                        renameDir($ysmSitesDir . "/" . $rowSiteName, $ysmSitesDir . "/" . $siteName);
+                    } else {
+                        //redirect to error message
+                        header("Location: index.php?error=edit&type=1");
+                        echo "<script>window.location.href='index.php?error=edit&type=1';</script>";
                     }
-
                 } elseif (!empty($_POST['delete_id'])) {
-
                     //Delete
-                    //delete site
-                    $siteDelete = "DELETE FROM sites WHERE id=" . $_POST['delete_id'] . " ";
-                    mysqli_query($db_conn, $siteDelete);
+                    if (file_exists($ysmSitesDir . "/" . $rowSiteName)){
+                        //delete site from database
+                        $siteDelete = "DELETE FROM sites WHERE id=" . $_POST['delete_id'] . " ";
+                        mysqli_query($db_conn, $siteDelete);
 
-                    //Archive/Move site
+                        exec("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ."> " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup.sql");
 
+                        sleep(3); //wait
+
+                        //Create a zip in the archive folder
+                        addzip($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/" . $rowSiteName . ".zip");
+
+                        sleep(1); //wait
+
+                        unlink($ysmSitesDir . "/" . $rowSiteName);
+                    } else {
+                        //redirect to error message
+                        header("Location: index.php?error=delete&type=1");
+                        echo "<script>window.location.href='index.php?error=delete&type=1';</script>";
+                    }
                 } else {
-
                     //Add
                     //insert data on submit
                     $siteInsert = "INSERT INTO sites (customerid, name, sid, version, date) VALUES ('" . $custNumber . "', '" . $siteName . "', '" . $custSid . "', '', '" . date("Y-m-d H:i:s") . "')";
@@ -75,7 +88,6 @@ include_once('includes/header.inc.php');
                     //$data = curl_exec($ch);
                     curl_close($ch);
                 }
-
             }
 
             if ($_GET['form'] == 'delete'){
@@ -178,7 +190,7 @@ include_once('includes/header.inc.php');
     $(document).ready(function () {
         $('#dataTable').dataTable({
             "iDisplayLength": 25,
-            "order": [[4, "desc"]],
+            "order": [[5, "desc"]],
             "columnDefs": [{
                 "targets": 'no-sort',
                 "orderable": false

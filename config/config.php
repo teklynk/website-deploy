@@ -11,7 +11,9 @@ if (mysqli_connect_errno($db_conn)) {
 }
 
 //Global Variables
-$ysmSitesDir = "/var/www/html";
+$IPrange = "";
+$ysmArchiveDir = "/home/rjones/archive";
+$ysmSitesDir = "/home/rjones/htdocs";
 $customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";
 $ysmServer = "http://ysmcustomerdemo1.tlcdelivers.com";
 $buildServer = "https://jenkins.tlcdelivers.com/buildByToken/buildWithParameters?job=YSM7_Demo_Parameterized_Add_Site&token=deployYSMCustomerWebApp";
