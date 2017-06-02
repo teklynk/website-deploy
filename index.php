@@ -25,7 +25,6 @@ include_once('includes/header.inc.php');
             </div>
             <?php
 
-
             $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
             $rowSite = mysqli_fetch_array($sqlSite);
 
@@ -111,8 +110,7 @@ include_once('includes/header.inc.php');
                         $ch = curl_init($jenkinsUrl);
                         curl_setopt($ch, CURLOPT_HEADER, true);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-                        //$data = curl_exec($ch);
+                        $data = curl_exec($ch);
                         curl_close($ch);
                     } else {
                         //redirect to error message
