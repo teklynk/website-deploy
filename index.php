@@ -61,7 +61,12 @@ include_once('includes/header.inc.php');
                         //create a sql dump
                         passthru("mysqldump --opt --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ." > " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup_" . date("Y-m-d_H-i-s") . ".sql");
 
-                        sleep(3); //wait
+                        sleep(1); //wait
+
+                        //Drop database
+                        mysqli_query($db_conn, "DROP DATABASE ysm_$custNumber");
+
+                        sleep(1); //wait
 
                         //Create a zip in the archive folder
                         zipFile($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/" . $rowSiteName . ".zip", true);
