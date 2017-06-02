@@ -60,12 +60,11 @@ include_once('includes/header.inc.php');
                         mysqli_query($db_conn, $siteDelete);
 
                         //create a sql dump
-                        $backupSQLFile = $ysmArchiveDir."/ysm_backup_".$customerId."_".date("Y-m-d H:i:s").".sql";
+                        $backupSQLFile = $ysmArchiveDir."/ysm_backup_".$customerId."_".date("Y-m-d").".sql";
                         $backupCreateFile = fopen($backupSQLFile, "w") or die("Unable to open file!");
+                        fclose($backupCreateFile);
 
                         echo exec("mysqldump --user=".$db_username." --password=".$db_password." --host=".$db_servername." ysm_".$customerId." > ".$backupSQLFile.";");
-
-                        fclose($backupCreateFile);
 
                         sleep(1); //wait
 
