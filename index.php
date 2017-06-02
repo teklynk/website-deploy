@@ -32,10 +32,11 @@ include_once('includes/header.inc.php');
                 $replaceArr = array("_", "_", "");
 
                 $siteName = str_replace($searchArr, $replaceArr, safeCleanStr(strtolower($_POST['site_name'])));
-                $custNumber = safeCleanStr(urlencode($_POST['cust_number']));
-                $custSid = safeCleanStr(urlencode($_POST['cust_sid']));
-                $formAction = strtolower(urlencode($_POST['form_action']));
-                $rowSiteName = strtolower(urlencode($_POST['row_site_name']));
+                $custNumber = safeCleanStr($_POST['cust_number']);
+                $customerId = safeCleanStr($_POST['customer_id']);
+                $custSid = safeCleanStr($_POST['cust_sid']);
+                $formAction = strtolower($_POST['form_action']);
+                $rowSiteName = strtolower($_POST['row_site_name']);
 
                 if (!empty($_POST['loc_id'])) {
                     //Edit
@@ -59,13 +60,13 @@ include_once('includes/header.inc.php');
                         mysqli_query($db_conn, $siteDelete);
 
                         //create a sql dump
-                        system("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ." > " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup_" . date("Y-m-d_H-i-s") . ".sql");
+                        exec("mysqldump --opt --user=".$db_username." --password=".$db_password." --host=".$db_servername." 'ysm_".$customerId." | gzip > ".$ysmSitesDir."/config/".$customerId.".sql';");
 
                         sleep(1); //wait
 
                         //Drop database
-                        $dropDB = "DROP DATABASE ysm_" . $custNumber . " ";
-                        mysqli_query($db_conn, $dropDB);
+                        $dropSQLDB = "DROP DATABASE ysm_" . $customerId . " ";
+                        mysqli_query($db_conn, $dropSQLDB);
 
                         sleep(1); //wait
 
@@ -129,8 +130,9 @@ include_once('includes/header.inc.php');
 
                     echo "<input type='hidden' id='row_site_name' name='row_site_name' value='".$rowSite['name']."'/>";
                     echo "<input type='hidden' id='form_action' name='form_action' value='".$_GET['form']."'/>";
+                    echo "<input type='hidden' id='customer_id' name='customer_id' value='".$rowSite['customerid']."'/>";
 
-                    if ($_GET['form'] == 'delete'){
+                    if ($_GET['form'] == 'delete') {
                         echo "<input type='hidden' id='delete_id' name='delete_id' value='".$_GET['id']."'/>";
                         echo "<button class='btn btn-danger' type='submit' id='deletesubmit' name='deletesubmit'><i class='fa fa-trash'></i> Delete</button>";
                     } else {
