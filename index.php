@@ -12,7 +12,8 @@ include_once('includes/header.inc.php');
         </ol>
     </div>
 </div>
-<!--modal window-->
+
+<!--modal window with form-->
 <div id="myModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -23,10 +24,11 @@ include_once('includes/header.inc.php');
                 <h4 class="modal-title">&nbsp;</h4>
             </div>
             <?php
-            $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
-            $rowSite = mysqli_fetch_array($sqlSite);
 
             if (!empty($_POST)) {
+
+                $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
+                $rowSite = mysqli_fetch_array($sqlSite);
 
                 $searchArr = array(" ", "-", "'");
                 $replaceArr = array("_", "_", "");
@@ -60,7 +62,7 @@ include_once('includes/header.inc.php');
                         mysqli_query($db_conn, $siteDelete);
 
                         //create a sql dump
-                        $backupSQLFile = $ysmArchiveDir."/ysm_backup_".$customerId."_".date("Y-m-d").".sql";
+                        $backupSQLFile = $ysmArchiveDir."/ysm_database_backup_".$customerId."_".date("Y-m-d").".sql";
                         $backupCreateFile = fopen($backupSQLFile, "w") or die("Unable to open file!");
                         fclose($backupCreateFile);
 
@@ -72,10 +74,8 @@ include_once('includes/header.inc.php');
                         $dropSQLDB = "DROP DATABASE ysm_" . $customerId . " ";
                         mysqli_query($db_conn, $dropSQLDB);
 
-                        sleep(1); //wait
-
                         //Create a zip in the archive folder
-                        zipFile($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/" . $rowSiteName . ".zip", true);
+                        zipFile($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/ysm_site_backup_".$customerId."_".date("Y-m-d").".zip", true);
 
                         sleep(1); //wait
 
@@ -151,6 +151,8 @@ include_once('includes/header.inc.php');
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!--main page container -->
 <div class="container">
     <div class="card">
         <div class="card-body">
