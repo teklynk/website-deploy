@@ -25,10 +25,10 @@ include_once('includes/header.inc.php');
             </div>
             <?php
 
-            if (!empty($_POST)) {
+            $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
+            $rowSite = mysqli_fetch_array($sqlSite);
 
-                $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
-                $rowSite = mysqli_fetch_array($sqlSite);
+            if (!empty($_POST)) {
 
                 $searchArr = array(" ", "-", "'");
                 $replaceArr = array("_", "_", "");
