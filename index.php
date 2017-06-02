@@ -60,7 +60,7 @@ include_once('includes/header.inc.php');
                         mysqli_query($db_conn, $siteDelete);
 
                         //create a sql dump
-                        echo exec("mysqldump --opt --user=".$db_username." --password=".$db_password." --host=".$db_servername." 'ysm_".$customerId." | gzip > ".$ysmSitesDir."/config/".$customerId.".gz';");
+                        echo exec("mysqldump --opt --user=".$db_username." --password=".$db_password." --host=".$db_servername." 'ysm_".$customerId." | gzip > ".$ysmArchiveDir."/ysm_backup_".$customerId."_".date("Y-m-d H:i:s").".gz';");
 
                         sleep(1); //wait
 
