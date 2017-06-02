@@ -152,11 +152,23 @@ include_once('includes/header.inc.php');
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<?php
+//Set error messages
+if ($_GET['error']=='delete' && $_GET['type'] == '1'){
+    $pageMsg = "<div class='alert alert-danger'>Site directory does not exist.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
+} elseif ($_GET['error']=='add' && $_GET['type'] == '1') {
+    $pageMsg = "<div class='alert alert-danger'>Site name already exists.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
+} elseif ($_GET['error']=='edit' && $_GET['type'] == '1') {
+    $pageMsg = "<div class='alert alert-danger'>Site name already exists.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
+}
+?>
+
 <!--main page container -->
 <div class="container">
     <div class="card">
         <div class="card-body">
             <h1 class="page-header">Active Sites</h1>
+            <?php echo $pageMsg; ?>
             <button type="button" title="Add a New Site" class="btn btn-primary" id="add" onClick="window.location='index.php?add=true&form=add&id=';"><i class="fa fa-fw fa-plus"></i> Add a New Site</button>
             <br/><br/>
             <table class="table table-bordered table-hover table-striped table-responsive dataTable" id="dataTable">
@@ -166,7 +178,6 @@ include_once('includes/header.inc.php');
                         <th>Site Name</th>
                         <th>SID</th>
                         <th class="no-sort">Admin URL</th>
-                        <th>Version</th>
                         <th>Date</th>
                         <th class="no-sort">Actions</th>
                     </tr>
@@ -181,10 +192,9 @@ include_once('includes/header.inc.php');
                         ?>
                         <tr>
                             <td><a href="<?php echo $customerLinkStr . $rowSiteList['customerid']; ?>" target="_blank"><?php echo $rowSiteList['customerid']; ?></a></td>
-                            <td><?php echo $rowSiteList['name']; ?></td>
+                            <td><a href="<?php echo $ysmServer . '/' . $rowSiteList['name']; ?>" target="_blank"><?php echo $rowSiteList['name']; ?></a></td>
                             <td><?php echo $rowSiteList['sid']; ?></td>
                             <td><a href="<?php echo $ysmServer . '/' . $rowSiteList['name']; ?>/admin" target="_blank">Admin Link</a></td>
-                            <td><?php echo $rowSiteList['version']; ?></td>
                             <td><?php echo $rowSiteList['date']; ?></td>
                             <td class="col-xs-2">
                                 <button type="button" title="Edit" class="btn btn-primary" id="edit" onClick="window.location='index.php?edit=true&form=edit&id=<?php echo $rowSiteList['id']; ?>';"><i class='fa fa-fw fa-edit'></i></button>
