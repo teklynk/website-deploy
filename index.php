@@ -59,12 +59,13 @@ include_once('includes/header.inc.php');
                         mysqli_query($db_conn, $siteDelete);
 
                         //create a sql dump
-                        passthru("mysqldump --opt --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ." > " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup_" . date("Y-m-d_H-i-s") . ".sql");
+                        exec("mysqldump --opt --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ." > " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup_" . date("Y-m-d_H-i-s") . ".sql");
 
                         sleep(1); //wait
 
                         //Drop database
-                        mysqli_query($db_conn, "DROP DATABASE ysm_$custNumber");
+                        $dropDB = "DROP DATABASE ysm_" . $custNumber . " ";
+                        mysqli_query($db_conn, $dropDB);
 
                         sleep(1); //wait
 
