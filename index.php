@@ -58,12 +58,12 @@ include_once('includes/header.inc.php');
                         $siteDelete = "DELETE FROM sites WHERE id=" . $_POST['delete_id'] . " ";
                         mysqli_query($db_conn, $siteDelete);
 
-                        //exec("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ."> " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup.sql");
+                        exec("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ."> " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup.sql");
 
                         sleep(3); //wait
 
                         //Create a zip in the archive folder
-                        addzip($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/" . $rowSiteName . ".zip");
+                        zipFile($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/" . $rowSiteName . ".zip", true);
 
                         sleep(1); //wait
 
@@ -76,17 +76,23 @@ include_once('includes/header.inc.php');
                 } else {
                     //Add
                     //insert data on submit
-                    $siteInsert = "INSERT INTO sites (customerid, name, sid, version, date) VALUES ('" . $custNumber . "', '" . $siteName . "', '" . $custSid . "', '', '" . date("Y-m-d H:i:s") . "')";
-                    mysqli_query($db_conn, $siteInsert);
+                    if ($rowSiteName != $siteName){
+                        $siteInsert = "INSERT INTO sites (customerid, name, sid, version, date) VALUES ('" . $custNumber . "', '" . $siteName . "', '" . $custSid . "', '', '" . date("Y-m-d H:i:s") . "')";
+                        mysqli_query($db_conn, $siteInsert);
 
-                    //Run Jenkins Build from URL
-                    $jenkinsUrl = $buildServer."&form=".$formAction."&site_name=".$siteName."&cust_number=".$custNumber."&cust_sid=".$custSid;
+                        //Run Jenkins Build from URL
+                        $jenkinsUrl = $buildServer."&form=".$formAction."&site_name=".$siteName."&cust_number=".$custNumber."&cust_sid=".$custSid;
 
-                    $ch = curl_init($jenkinsUrl);
-                    curl_setopt($ch, CURLOPT_HEADER, true);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $data = curl_exec($ch);
-                    curl_close($ch);
+                        $ch = curl_init($jenkinsUrl);
+                        curl_setopt($ch, CURLOPT_HEADER, true);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $data = curl_exec($ch);
+                        curl_close($ch);
+                    } else {
+                        //redirect to error message
+                        header("Location: index.php?error=add&type=1");
+                        echo "<script>window.location.href='index.php?error=add&type=1';</script>";
+                    }
                 }
             }
 
