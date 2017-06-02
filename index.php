@@ -25,6 +25,7 @@ include_once('includes/header.inc.php');
             </div>
             <?php
 
+
             $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
             $rowSite = mysqli_fetch_array($sqlSite);
 
@@ -37,12 +38,23 @@ include_once('includes/header.inc.php');
                 $custNumber = safeCleanStr($_POST['cust_number']);
                 $customerId = safeCleanStr($_POST['customer_id']);
                 $custSid = safeCleanStr($_POST['cust_sid']);
+                $customerSid = safeCleanStr($_POST['customer_sid']);
                 $formAction = strtolower($_POST['form_action']);
                 $rowSiteName = strtolower($_POST['row_site_name']);
 
+                $sqlCheckSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE name='" . $siteName . "' OR customerid='" . $custNumber . "' ");
+                $rowCheckSite = mysqli_num_rows($sqlCheckSite);
+
+                if ($rowCheckSite > 0) {
+                    //redirect to error message
+                    header("Location: index.php?error=edit&type=1");
+                    echo "<script>window.location.href='index.php?error=edit&type=1';</script>";
+                    die();
+                }
+
                 if (!empty($_POST['loc_id'])) {
                     //Edit
-                    if ($rowSiteName != $siteName){
+                    if ($rowSiteName != $siteName || $custNumber != $customerId || $custSid != $customerSid){
                         //update data on submit
                         $siteUpdate = "UPDATE sites SET customerid='" . $custNumber . "', name='" . $siteName . "', sid='" . $custSid . "', version='', date='" . date("Y-m-d H:i:s") . "' WHERE id=" . $_POST['loc_id'] . " ";
                         mysqli_query($db_conn, $siteUpdate);
@@ -89,7 +101,7 @@ include_once('includes/header.inc.php');
                 } else {
                     //Add
                     //insert data on submit
-                    if ($rowSiteName != $siteName){
+                    if ($rowSiteName != $siteName || $custNumber != $customerId || $custSid != $customerSid){
                         $siteInsert = "INSERT INTO sites (customerid, name, sid, version, date) VALUES ('" . $custNumber . "', '" . $siteName . "', '" . $custSid . "', '', '" . date("Y-m-d H:i:s") . "')";
                         mysqli_query($db_conn, $siteInsert);
 
@@ -99,7 +111,8 @@ include_once('includes/header.inc.php');
                         $ch = curl_init($jenkinsUrl);
                         curl_setopt($ch, CURLOPT_HEADER, true);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        $data = curl_exec($ch);
+
+                        //$data = curl_exec($ch);
                         curl_close($ch);
                     } else {
                         //redirect to error message
@@ -135,6 +148,7 @@ include_once('includes/header.inc.php');
                     echo "<input type='hidden' id='row_site_name' name='row_site_name' value='".$rowSite['name']."'/>";
                     echo "<input type='hidden' id='form_action' name='form_action' value='".$_GET['form']."'/>";
                     echo "<input type='hidden' id='customer_id' name='customer_id' value='".$rowSite['customerid']."'/>";
+                    echo "<input type='hidden' id='customer_sid' name='customer_sid' value='".$rowSite['sid']."'/>";
 
                     if ($_GET['form'] == 'delete') {
                         echo "<input type='hidden' id='delete_id' name='delete_id' value='".$_GET['id']."'/>";
@@ -157,9 +171,9 @@ include_once('includes/header.inc.php');
 if ($_GET['error']=='delete' && $_GET['type'] == '1'){
     $pageMsg = "<div class='alert alert-danger'>Site directory does not exist.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
 } elseif ($_GET['error']=='add' && $_GET['type'] == '1') {
-    $pageMsg = "<div class='alert alert-danger'>Site name already exists.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
+    $pageMsg = "<div class='alert alert-danger'>Site name or customer id already exists.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
 } elseif ($_GET['error']=='edit' && $_GET['type'] == '1') {
-    $pageMsg = "<div class='alert alert-danger'>Site name already exists.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
+    $pageMsg = "<div class='alert alert-danger'>Site name or customer id already exists.<button type='button' class='close' data-dismiss='alert' onclick=\"window.location.href='index.php'\">×</button></div>";
 }
 ?>
 
