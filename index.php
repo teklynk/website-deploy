@@ -59,7 +59,7 @@ include_once('includes/header.inc.php');
                         mysqli_query($db_conn, $siteDelete);
 
                         //create a sql dump
-                        echo exec("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ." > " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup.sql");
+                        passthru("mysqldump --opt --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ." > " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup_" . date("Y-m-d_H-i-s") . ".sql");
 
                         sleep(3); //wait
 
