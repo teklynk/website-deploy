@@ -12,10 +12,10 @@ if (mysqli_connect_errno($db_conn)) {
 
 //Global Variables
 $IPrange = "";
-$ysmArchiveDir = "/home/rjones/archive";
-$ysmSitesDir = "/home/rjones/htdocs";
+$ysmArchiveDir = "/var/www/archive";
+$ysmSitesDir = "/var/www/html";
 $customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";
-$ysmServer = "http://ysmcustomerdemo1.tlcdelivers.com";
+$ysmServer = "http://10.10.15.142";
 $buildServer = "https://jenkins.tlcdelivers.com/buildByToken/buildWithParameters?job=YSM7_Demo_Parameterized_Add_Site&token=deployYSMCustomerWebApp";
 
 //Get Sub-folder name
