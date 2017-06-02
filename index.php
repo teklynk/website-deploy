@@ -58,7 +58,7 @@ include_once('includes/header.inc.php');
                         $siteDelete = "DELETE FROM sites WHERE id=" . $_POST['delete_id'] . " ";
                         mysqli_query($db_conn, $siteDelete);
 
-                        exec("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ."> " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup.sql");
+                        //exec("mysqldump --user=" . $db_username . " --password=" . $db_password . " --host=" . $db_servername . " ysm_" . $custNumber  ."> " . $ysmSitesDir . "/config/ysm_" . $custNumber . "_backup.sql");
 
                         sleep(3); //wait
 
