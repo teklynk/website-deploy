@@ -78,38 +78,13 @@ session_start();
         }
 
         .modal-dialog {
-            width: 50%;
+            width: 25%;
         }
         footer {
             display: inline-block;
             visibility: visible;
         }
     </style>
-    <?php
-    if ($_GET['modal'] == 'true'){
-        ?>
-        <style>
-            html, body {
-                background-color: #fff !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            #page-wrapper {
-                margin: 0 !important;
-                padding: 0 !important;
-                min-height: 0 !important;
-            }
-            .navbar-inverse, .breadcrumb, footer {
-                display: none !important;
-                visibility: hidden !important;
-            }
-            .card {
-                margin: 0 !important;
-            }
-        </style>
-        <?php
-    }
-    ?>
 </head>
 <body>
 

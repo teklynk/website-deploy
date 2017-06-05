@@ -81,17 +81,38 @@ include_once('includes/header.inc.php');
 
                         sleep(1); //wait
 
-                        //Drop database
-                        $dropSQLDB = "DROP DATABASE ysm_" . $customerId . " ";
-                        mysqli_query($db_conn, $dropSQLDB);
-
                         //Create a zip in the archive folder
                         zipFile($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/ysm_site_backup_".$customerId."_".date("Y-m-d").".zip", true);
 
                         sleep(1); //wait
 
+                        //Drop database
+                        $dropSQLDB = "DROP DATABASE ysm_" . $customerId . " ";
+                        mysqli_query($db_conn, $dropSQLDB);
+
                         //Delete the site folder
                         rrmdir($ysmSitesDir . "/" . $rowSiteName);
+                    } else {
+                        //redirect to error message
+                        header("Location: index.php?error=delete&type=1");
+                        echo "<script>window.location.href='index.php?error=delete&type=1';</script>";
+                    }
+                } elseif (!empty($_POST['backup_id'])) {
+                    //Backup
+                    if (file_exists($ysmSitesDir . "/" . $rowSiteName)){
+
+                        //create a sql dump
+                        $backupSQLFile = $ysmArchiveDir."/ysm_database_backup_".$customerId."_".date("Y-m-d").".sql";
+                        $backupCreateFile = fopen($backupSQLFile, "w") or die("Unable to open file!");
+                        fclose($backupCreateFile);
+
+                        echo exec("mysqldump --user=".$db_username." --password=".$db_password." --host=".$db_servername." ysm_".$customerId." > ".$backupSQLFile.";");
+
+                        sleep(1); //wait
+
+                        //Create a zip in the archive folder
+                        zipFile($ysmSitesDir . "/" . $rowSiteName, $ysmArchiveDir . "/ysm_site_backup_".$customerId."_".date("Y-m-d").".zip", true);
+
                     } else {
                         //redirect to error message
                         header("Location: index.php?error=delete&type=1");
@@ -120,7 +141,7 @@ include_once('includes/header.inc.php');
                 }
             }
 
-            if ($_GET['form'] == 'delete'){
+            if ($_GET['form'] == 'delete' || $_GET['form'] == 'backup'){
                 $disableInputs = 'disabled';
             } else {
                 $disableInputs = '';
@@ -151,6 +172,9 @@ include_once('includes/header.inc.php');
                     if ($_GET['form'] == 'delete') {
                         echo "<input type='hidden' id='delete_id' name='delete_id' value='".$_GET['id']."'/>";
                         echo "<button class='btn btn-danger' type='submit' id='deletesubmit' name='deletesubmit'><i class='fa fa-trash'></i> Delete</button>";
+                    } elseif ($_GET['form'] == 'backup') {
+                        echo  "<input type='hidden' id='backup_id' name='backup_id' value='".$_GET['id']."'/>";
+                        echo "<button class='btn btn-primary' type='submit' id='addeditsubmit' name='addeditsubmit'><i class='fa fa-refresh'></i> Backup</button>";
                     } else {
                         echo  "<input type='hidden' id='loc_id' name='loc_id' value='".$_GET['id']."'/>";
                         echo "<button class='btn btn-primary' type='submit' id='addeditsubmit' name='addeditsubmit'><i class='fa fa-save'></i> Save</button>";
@@ -210,6 +234,7 @@ if ($_GET['error']=='delete' && $_GET['type'] == '1'){
                             <td><?php echo $rowSiteList['date']; ?></td>
                             <td class="col-xs-2">
                                 <button type="button" title="Edit" class="btn btn-primary" id="edit" onClick="window.location='index.php?edit=true&form=edit&id=<?php echo $rowSiteList['id']; ?>';"><i class='fa fa-fw fa-edit'></i></button>
+                                <button type="button" title="Backup" class="btn btn-default" id="backup" onClick="window.location='index.php?backup=true&form=backup&id=<?php echo $rowSiteList['id']; ?>';"><i class='fa fa-fw fa-refresh'></i></button>
                                 <button type="button" title="Delete" class="btn btn-danger" id="delete" onClick="window.location='index.php?delete=true&form=delete&id=<?php echo $rowSiteList['id']; ?>';"><i class='fa fa-fw fa-trash'></i></button>
                             </td>
                         </tr>
@@ -225,11 +250,6 @@ if ($_GET['error']=='delete' && $_GET['type'] == '1'){
     </div>
 </div>
 
-<style>
-    .modal-sm {
-        width: 25%;
-    }
-</style>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#dataTable').dataTable({
@@ -248,7 +268,7 @@ if ($_GET['error']=='delete' && $_GET['type'] == '1'){
         });
 
         var url = window.location.href;
-        if (url.indexOf('?edit=true') != -1 || url.indexOf('?delete=true') != -1 || url.indexOf('?add=true') != -1 ) {
+        if (url.indexOf('?edit=true') != -1 || url.indexOf('?delete=true') != -1 || url.indexOf('?add=true') != -1 || url.indexOf('?backup=true') != -1) {
             setTimeout(function(){
                 $('#myModal').modal('show');
             }, 250);
