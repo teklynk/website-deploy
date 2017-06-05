@@ -5,6 +5,7 @@ session_start();
 <html lang="en">
 <head>
     <?php
+
     if (!defined('inc_access')) {
         die('Direct access not permitted');
     }
