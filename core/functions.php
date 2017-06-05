@@ -303,9 +303,6 @@ function getUrlContents($getUrl) {
 
     return $data;
 }
-
-
-
 //Check if a new version is available
 function checkForUpdates(){
     global $ysmVersion;

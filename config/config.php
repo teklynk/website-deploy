@@ -1,6 +1,10 @@
 <?php
 require_once('dbconn.php');
 
+// PHP exec function must be enabled in order to run a mysql dump.
+// Open the PHP.ini file and remove "exec" on "disable_functions":
+// disable_functions=show_source, system, shell_exec, exec
+
 //Establish config connection
 $db_conn = mysqli_connect($db_servername, $db_username, $db_password);
 
@@ -11,7 +15,7 @@ if (mysqli_connect_errno($db_conn)) {
 }
 
 //Global Variables
-$IPrange = "";
+$IPrange = array();
 $ysmArchiveDir = "/var/www/archive";
 $ysmSitesDir = "/var/www/html";
 $customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";

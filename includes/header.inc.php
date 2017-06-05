@@ -17,11 +17,13 @@ session_start();
     require_once('core/functions.php');
 
     //IP Range is set in config and contains numbers
-    if (!empty($IPrange)) {
-        if (!strstr(getRealIpAddr(), $IPrange)) {
+    if (!empty($IPrange) && is_array($IPrange)) {
+        $IPmatch = (str_replace($IPrange, '', getRealIpAddr()) != getRealIpAddr());
+        if ($IPmatch != true) {
             die('Permission denied. Not inside network. Your IP is ' . getRealIpAddr()); //Do not execute any more code on the page
         }
     }
+
     ?>
 
     <meta charset="utf-8" />
