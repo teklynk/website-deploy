@@ -15,7 +15,7 @@ if (mysqli_connect_errno($db_conn)) {
 }
 
 //Global Variables
-$IPrange = array();
+$IPrange = array("127.0.0.", "192.168.", "10.10.");
 $ysmArchiveDir = "/var/www/archive";
 $ysmSitesDir = "/var/www/html";
 $customerLinkStr = "https://intranet.tlcdelivers.com/TLCWebLSN/customer.asp?Cust_ID=";

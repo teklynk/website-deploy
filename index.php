@@ -108,16 +108,9 @@ include_once('includes/header.inc.php');
                         $jenkinsUrl = $buildServer."&form=".$formAction."&site_name=".$siteName."&cust_number=".$custNumber."&cust_sid=".$custSid;
 
                         $ch = curl_init($jenkinsUrl);
-                        $timeout = 5;
                         curl_setopt($ch, CURLOPT_HEADER, true);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
                         $data = curl_exec($ch);
-                        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                        if ($http_status != 200) {
-                            echo "HTTP status ".$http_status.". Error loading URL. " .curl_error($ch);
-                            curl_close($ch);
-                        }
                         curl_close($ch);
                     } else {
                         //redirect to error message
