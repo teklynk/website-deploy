@@ -51,6 +51,7 @@ include_once('includes/header.inc.php');
                     die();
                 }
 
+
                 if (!empty($_POST['loc_id'])) {
                     //Edit
                     if ($rowSiteName != $siteName || $custNumber != $customerId || $custSid != $customerSid){
