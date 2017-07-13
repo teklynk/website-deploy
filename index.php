@@ -25,7 +25,7 @@ include_once('includes/header.inc.php');
             </div>
             <?php
 
-            $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id=" . $_GET['id'] . " ");
+            $sqlSite = mysqli_query($db_conn, "SELECT * FROM sites WHERE id='".$_GET['id']."' ");
             $rowSite = mysqli_fetch_array($sqlSite);
 
             if (!empty($_POST)) {

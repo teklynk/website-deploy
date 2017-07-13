@@ -192,46 +192,6 @@ function checkDependencies(){
         print_r("<div class='alert alert-danger'><span>Apache module (mod_vhost_alias) is not enabled on the server.<br/>Try: sudo a2enmod vhost_alias</span></div><br/>");
     }
 
-    // Check if sql file exists
-    if (!file_exists($dbFileLoc)) {
-        echo "$dbFileLoc does not exist";
-    } else {
-        if (!is_writeable($dbFileLoc)) {
-            die("$dbFileLoc is not writable. Check file permissions.");
-        }
-    }
-    // Check if dbconn.php file exists
-    if (!file_exists($dbFilename)) {
-        echo "$dbFilename does not exist";
-    } else {
-        if (!is_writeable($dbFilename)) {
-            die("$dbFilename is not writable. Check file permissions.");
-        }
-    }
-    // Check if blowfishsalt.php file exists
-    if (!file_exists($dbBlowfishLoc)) {
-        echo "$dbBlowfishLoc does not exist";
-    } else {
-        if (!is_writeable($dbBlowfishLoc)) {
-            die("$dbBlowfishLoc is not writable. Check file permissions.");
-        }
-    }
-    // Check if sitemap.xml file exists
-    if (!file_exists($sitemapFilename)) {
-        echo "$sitemapFilename does not exist";
-    } else {
-        if (!is_writeable($sitemapFilename)) {
-            die("$sitemapFilename is not writable. Check file permissions.");
-        }
-    }
-    // Check if robots.txt file exists
-    if (!file_exists($robotsFilename)) {
-        echo "$robotsFilename does not exist";
-    } else {
-        if (!is_writeable($robotsFilename)) {
-            die("$robotsFilename is not writable. Check file permissions.");
-        }
-    }
     return false;
 }
 

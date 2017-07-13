@@ -23,6 +23,8 @@ session_start();
         }
     }
 
+    //Check that the server has everything it needs
+    checkDependencies();
     ?>
 
     <meta charset="utf-8" />

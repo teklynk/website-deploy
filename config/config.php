@@ -10,8 +10,8 @@ $db_conn = mysqli_connect($db_servername, $db_username, $db_password);
 
 mysqli_select_db($db_conn, $db_name);
 
-if (mysqli_connect_errno($db_conn)) {
-    die("Failed to connect to MySQL: " . mysqli_connect_error($db_conn));
+if (mysqli_connect_errno()) {
+    die("Failed to connect to MySQL: " . mysqli_connect_error());
 }
 
 //Global Variables
